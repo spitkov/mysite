@@ -1,8 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
-    '@nuxtjs/tailwindcss',
-    '@nuxt/content'
+    '@nuxtjs/tailwindcss'
   ],
 
   app: {
@@ -35,8 +34,6 @@ export default defineNuxtConfig({
     }
   },
 
-  compatibilityDate: '2025-01-17',
-
   experimental: {
     payloadExtraction: true,
     renderJsonPayloads: true,
@@ -47,14 +44,5 @@ export default defineNuxtConfig({
   nitro: {
     compressPublicAssets: true,
     minify: true
-  },
-
-  routeRules: {
-    '/': { prerender: true },
-    '/portfolio': { prerender: true },
-    '/tools': { prerender: true },
-    '/blog': { prerender: true },
-    '/fun': { prerender: true },
-    '/api/**': { prerender: false }
   }
 })
