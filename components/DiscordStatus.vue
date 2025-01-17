@@ -1,0 +1,91 @@
+<template>
+  <div class="font-mono">
+    <div v-if="!data" class="text-white/50">
+      > connecting to discord...
+    </div>
+
+    <div v-else class="space-y-3">
+      <!-- Activities -->
+      <div v-for="activity in data.activities" :key="activity.name" class="border border-white/10 rounded p-3">
+        <div class="flex items-center space-x-3">
+          <img 
+            :src="getActivityIcon(activity)" 
+            class="w-12 h-12 rounded bg-white/5"
+            alt="Activity icon"
+          />
+          <div class="text-sm text-white/70">
+            <p>> {{ activity.name }}</p>
+            <p v-if="activity.details" class="text-white/50">{{ activity.details }}</p>
+            <p v-if="activity.state" class="text-white/50">{{ activity.state }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+const data = ref(null)
+let previousData = null
+const config = useRuntimeConfig()
+const DISCORD_ID = config.public.discordId
+
+const statusColor = computed(() => {
+  if (!data.value?.discord_status) return 'bg-white/20'
+  switch (data.value.discord_status) {
+    case 'online': return 'bg-[#43b581]'
+    case 'idle': return 'bg-[#faa61a]'
+    case 'dnd': return 'bg-[#f04747]'
+    default: return 'bg-[#747f8d]'
+  }
+})
+
+const spotifyImage = computed(() => {
+  if (!data.value?.spotify?.album_art_url) return ''
+  return data.value.spotify.album_art_url
+})
+
+function getActivityIcon(activity) {
+  if (activity.type === 2 && activity.id === 'spotify:1') {
+    return activity.assets?.large_image?.startsWith('spotify:')
+      ? `https://i.scdn.co/image/${activity.assets.large_image.slice(8)}`
+      : activity.assets?.large_image
+  }
+
+  if (activity.assets?.large_image) {
+    if (activity.assets.large_image.startsWith('mp:external')) {
+      return activity.assets.large_image.replace(/mp:external\/.*\/https\//, 'https://')
+    }
+    return `https://cdn.discordapp.com/app-assets/${activity.application_id}/${activity.assets.large_image}.png`
+  }
+
+  if (activity.assets?.small_image) {
+    return `https://cdn.discordapp.com/app-assets/${activity.application_id}/${activity.assets.small_image}.png`
+  }
+
+  return `https://cdn.discordapp.com/app-icons/${activity.application_id}/favicon.png`
+}
+
+async function fetchDiscordStatus() {
+  try {
+    const response = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`)
+    const result = await response.json()
+    
+    if (result.success && JSON.stringify(result.data) !== JSON.stringify(previousData)) {
+      data.value = result.data
+      previousData = result.data
+    }
+  } catch (error) {
+    console.error('Error fetching Discord status:', error)
+  }
+}
+
+onMounted(() => {
+  fetchDiscordStatus()
+  setInterval(fetchDiscordStatus, 1000)
+})
+
+onUnmounted(() => {
+  clearInterval(fetchDiscordStatus)
+})
+</script> 
