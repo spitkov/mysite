@@ -2,7 +2,7 @@
   <div class="max-w-2xl mx-auto space-y-6">
     <GridBackground />
     <div class="border border-white/10 rounded-lg p-6 bg-black relative z-10">
-      <div class="font-bold text-xl mb-6">> portfolio</div>
+      <div class="font-bold text-xl mb-6">Portfolio</div>
       
       <div class="space-y-6">
         <!-- Forgejo Server -->

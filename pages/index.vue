@@ -9,11 +9,10 @@
         </div>
         
         <div class="space-y-4">
-          <div class="font-bold text-xl">> whoami</div>
-          <div class="space-y-2 font-mono">
-            <p class="text-lg">> spitkov</p>
-            <p class="text-white/80">> full-stack dev - cybersec</p>
-            <p class="text-white/80">> Hungary</p>
+          <div class="font-bold text-xl">spitkov</div>
+          <div class="space-y-2">
+            <p class="text-white/80">full-stack dev - cybersec</p>
+            <p class="text-white/80">Hungary</p>
             <div class="flex justify-center space-x-4 text-white/60 hover:text-white/80">
               <a href="mailto:hello@spitkov.hu" class="hover:text-white hover:underline transition-colors">email</a>
               <span>•</span>
@@ -25,7 +24,7 @@
     </div>
 
     <div class="border border-white/10 rounded-lg p-6 bg-black relative z-10">
-      <div class="font-bold text-xl mb-4">> discord status</div>
+      <div class="font-bold text-xl mb-4">Discord Status</div>
       <DiscordStatus />
     </div>
   </div>

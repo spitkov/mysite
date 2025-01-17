@@ -1,8 +1,23 @@
 <template>
-  <NuxtLayout>
-    <NuxtPage />
-  </NuxtLayout>
+  <div>
+    <NuxtLoadingIndicator color="#ffffff" />
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
+  </div>
 </template>
+
+<script setup>
+useHead({
+  viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
+  link: [
+    { rel: 'dns-prefetch', href: 'https://fonts.googleapis.com' },
+    { rel: 'dns-prefetch', href: 'https://fonts.gstatic.com' },
+    { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+    { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }
+  ]
+})
+</script>
 
 <style>
 html {
@@ -10,10 +25,28 @@ html {
 }
 
 body {
-  @apply bg-dark text-white font-sans;
+  background: #000;
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
 }
 
 ::selection {
-  @apply bg-primary/20 text-white;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.page-enter-active,
+.page-leave-active {
+  transition: all 0.15s ease-out;
+}
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 </style>

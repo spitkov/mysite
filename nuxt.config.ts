@@ -22,7 +22,10 @@ export default defineNuxtConfig({
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
         { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap' }
-      ]
+      ],
+      htmlAttrs: {
+        lang: 'en'
+      }
     }
   },
 
@@ -32,5 +35,26 @@ export default defineNuxtConfig({
     }
   },
 
-  compatibilityDate: '2025-01-17'
+  compatibilityDate: '2025-01-17',
+
+  experimental: {
+    payloadExtraction: true,
+    renderJsonPayloads: true,
+    viewTransition: true,
+    componentIslands: true
+  },
+
+  nitro: {
+    compressPublicAssets: true,
+    minify: true
+  },
+
+  routeRules: {
+    '/**': { 
+      prerender: true,
+      cache: {
+        maxAge: 60 * 60 * 24
+      }
+    }
+  }
 })

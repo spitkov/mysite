@@ -3,7 +3,7 @@
     <GridBackground />
     <h2 class="text-lg md:text-xl mb-4">Blog</h2>
     <div class="text-white/70">
-      <p class="mb-2">> initializing blog system...</p>
+      <p class="mb-2">Initializing blog system...</p>
       <p class="text-sm text-white/50">Posts coming soon. Check back later.</p>
     </div>
   </div>
