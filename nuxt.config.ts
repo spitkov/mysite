@@ -50,11 +50,11 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    '/**': { 
-      prerender: true,
-      cache: {
-        maxAge: 60 * 60 * 24
-      }
-    }
+    '/': { prerender: true },
+    '/portfolio': { prerender: true },
+    '/tools': { prerender: true },
+    '/blog': { prerender: true },
+    '/fun': { prerender: true },
+    '/api/**': { prerender: false }
   }
 })
