@@ -10,14 +10,15 @@ let ctx
 let mouseX = 0
 let mouseY = 0
 const isMobile = ref(false)
-const gridSize = computed(() => isMobile.value ? 75 : 50)
-const maxDistance = computed(() => isMobile.value ? 100 : 150)
-const baseDotSize = computed(() => isMobile.value ? 1 : 1.5)
-const maxDotSize = computed(() => isMobile.value ? 2 : 3)
+const gridSize = computed(() => isMobile.value ? 40 : 50)
+const maxDistance = computed(() => isMobile.value ? 80 : 150)
+const baseDotSize = computed(() => isMobile.value ? 0.8 : 1.5)
+const maxDotSize = computed(() => isMobile.value ? 1.5 : 3)
 let animationFrameId = null
 let isDrawing = false
 let lastDrawTime = 0
 const THROTTLE_MS = 1000 / 30 // Cap at 30fps on mobile
+let resizeObserver = null
 
 onMounted(() => {
   if (!canvas.value) return
@@ -29,15 +30,26 @@ onMounted(() => {
   initCanvas()
   draw()
   
+  // Create resize observer
+  resizeObserver = new ResizeObserver(() => {
+    handleResize()
+  })
+  resizeObserver.observe(canvas.value)
+  
   window.addEventListener('mousemove', handleMouseMove, { passive: true })
   window.addEventListener('touchmove', handleTouchMove, { passive: true })
   window.addEventListener('resize', handleResize, { passive: true })
+  window.addEventListener('orientationchange', handleResize, { passive: true })
 })
 
 onUnmounted(() => {
+  if (resizeObserver) {
+    resizeObserver.disconnect()
+  }
   window.removeEventListener('mousemove', handleMouseMove)
   window.removeEventListener('touchmove', handleTouchMove)
   window.removeEventListener('resize', handleResize)
+  window.removeEventListener('orientationchange', handleResize)
   if (animationFrameId) {
     cancelAnimationFrame(animationFrameId)
   }
@@ -48,21 +60,30 @@ function checkMobile() {
 }
 
 function initCanvas() {
-  const dpr = isMobile.value ? 1 : (window.devicePixelRatio || 1)
-  const rect = canvas.value.getBoundingClientRect()
+  if (!canvas.value) return
   
+  const rect = canvas.value.getBoundingClientRect()
+  const dpr = window.devicePixelRatio || 1
+  
+  // Set canvas size in pixels
   canvas.value.width = rect.width * dpr
   canvas.value.height = rect.height * dpr
   
+  // Set display size
+  canvas.value.style.width = `${window.innerWidth}px`
+  canvas.value.style.height = `${window.innerHeight}px`
+  
+  // Scale context
   ctx.scale(dpr, dpr)
-  canvas.value.style.width = rect.width + 'px'
-  canvas.value.style.height = rect.height + 'px'
 }
 
 function handleResize() {
+  if (!canvas.value) return
+  
   if (animationFrameId) {
     cancelAnimationFrame(animationFrameId)
   }
+  
   checkMobile()
   initCanvas()
   requestDraw()
@@ -99,8 +120,10 @@ function requestDraw() {
 }
 
 function draw() {
-  const width = canvas.value.width / (window.devicePixelRatio || 1)
-  const height = canvas.value.height / (window.devicePixelRatio || 1)
+  if (!canvas.value || !ctx) return
+  
+  const width = window.innerWidth
+  const height = window.innerHeight
   
   ctx.clearRect(0, 0, width, height)
   
@@ -109,28 +132,6 @@ function draw() {
   
   const offsetX = (width - (numCols * gridSize.value)) / 2
   const offsetY = (height - (numRows * gridSize.value)) / 2
-  
-  // Draw grid lines
-  ctx.beginPath()
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)'
-  ctx.lineWidth = 1
-  
-  // Only draw grid lines if not on mobile
-  if (!isMobile.value) {
-    for (let col = 0; col <= numCols; col++) {
-      const x = Math.round(col * gridSize.value + offsetX) + 0.5
-      ctx.moveTo(x, 0)
-      ctx.lineTo(x, height)
-    }
-    
-    for (let row = 0; row <= numRows; row++) {
-      const y = Math.round(row * gridSize.value + offsetY) + 0.5
-      ctx.moveTo(0, y)
-      ctx.lineTo(width, y)
-    }
-    
-    ctx.stroke()
-  }
   
   // Draw dots with optimized calculations
   const currentBaseDotSize = baseDotSize.value
@@ -157,7 +158,7 @@ function draw() {
       }
       
       ctx.beginPath()
-      ctx.fillStyle = 'rgba(255, 255, 255, ' + opacity + ')'
+      ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`
       ctx.arc(x, y, size, 0, Math.PI * 2)
       ctx.fill()
     }

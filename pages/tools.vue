@@ -53,5 +53,19 @@
         </div>
       </div>
     </div>
+
+    <!-- Quick Links Section -->
+    <div class="border border-white/10 rounded-lg p-4 md:p-6 bg-black/50 backdrop-blur-xl relative">
+      <h2 class="text-lg md:text-xl mb-4">Quick Links</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <a href="https://t.3xx.pw" 
+           target="_blank" 
+           rel="noopener"
+           class="border border-white/10 rounded-lg p-4 hover:bg-white/5 transition-colors">
+          <h3 class="text-base font-medium mb-2">Tomcat Repo</h3>
+          <p class="text-sm text-white/60">A collection of useful tools and resources</p>
+        </a>
+      </div>
+    </div>
   </div>
 </template> 

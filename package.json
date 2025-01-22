@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev",
+    "dev": "nuxt dev --host",
     "generate": "nuxt generate",
     "preview": "nuxt preview --port 5640",
     "postinstall": "nuxt prepare"
@@ -12,8 +12,10 @@
   "dependencies": {
     "@headlessui/vue": "^1.7.23",
     "@heroicons/vue": "^2.2.0",
+    "@nuxt/content": "^3.0.0",
     "@nuxtjs/tailwindcss": "^6.13.1",
     "@tailwindcss/typography": "^0.5.16",
+    "gray-matter": "^4.0.3",
     "marked": "^15.0.6",
     "nuxt": "^3.15.2",
     "rehype-external-links": "^3.0.0",

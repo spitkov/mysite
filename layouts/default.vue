@@ -2,25 +2,25 @@
   <div class="min-h-screen bg-black/95 text-white font-mono flex flex-col cursor-custom">
     <nav class="fixed top-0 w-full bg-black/90 backdrop-blur-sm border border-green-500/20 z-50">
       <div class="max-w-4xl mx-auto px-2 md:px-4">
-        <div class="flex items-center justify-center h-12">
-          <div class="flex items-center space-x-3 md:space-x-6 overflow-x-auto no-scrollbar text-sm">
+        <div class="flex items-center justify-center h-10 md:h-12">
+          <div class="flex items-center space-x-2 md:space-x-6 overflow-x-auto no-scrollbar text-sm">
             <NuxtLink to="/" class="nav-link whitespace-nowrap">~/home</NuxtLink>
             <NuxtLink to="/portfolio" class="nav-link whitespace-nowrap">~/portfolio</NuxtLink>
             <NuxtLink to="/tools" class="nav-link whitespace-nowrap">~/tools</NuxtLink>
-            <NuxtLink to="/blog" class="nav-link whitespace-nowrap">~/blog</NuxtLink>
             <NuxtLink to="/fun" class="nav-link whitespace-nowrap">~/fun</NuxtLink>
           </div>
+
         </div>
       </div>
     </nav>
 
-    <main class="flex-1 flex flex-col items-center justify-center px-2 md:px-4 mt-12">
+    <main class="flex-1 flex flex-col items-center justify-center px-2 md:px-4 mt-10 md:mt-12">
       <div class="w-full max-w-4xl">
         <NuxtPage />
       </div>
     </main>
 
-    <footer class="w-full py-2 text-center text-white/50 text-sm border border-green-500/20">
+    <footer class="w-full py-1 md:py-2 text-center text-white/50 text-xs md:text-sm border border-green-500/20">
       <p>© 2024 spitkov :3</p>
     </footer>
 
@@ -70,8 +70,14 @@ body {
 .nav-link {
   position: relative;
   transition: all 0.3s ease;
-  padding: 0.5rem;
+  padding: 0.25rem 0.5rem;
   opacity: 0.7;
+}
+
+@media (min-width: 768px) {
+  .nav-link {
+    padding: 0.5rem;
+  }
 }
 
 .nav-link::before {
@@ -110,17 +116,45 @@ body {
 
 /* Add global card styles */
 [class*="border"] {
-  border-color: rgba(255, 255, 255, 0.1) !important;
-  border-width: 2px !important;
-  background: rgba(0, 0, 0, 0.95) !important;
-  backdrop-filter: blur(30px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  border-width: 1px !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  position: relative !important;
+  z-index: 1 !important;
 }
 
 [class*="bg-black"] {
-  background-color: rgba(0, 0, 0, 0.95) !important;
-  backdrop-filter: blur(30px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Ensure nav is always on top */
+nav {
+  position: fixed;
+  top: 0;
+  z-index: 50 !important;
+  background: rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+}
+
+/* Ensure footer is above background but below content */
+footer {
+  position: relative;
+  z-index: 1 !important;
+  background: rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+}
+
+/* Background should always be at the bottom */
+.fixed {
+  z-index: 0 !important;
 }
 
 .page-enter-active,

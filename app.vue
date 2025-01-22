@@ -28,6 +28,13 @@ body {
   background: #000;
   color: #fff;
   font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
 }
 
 ::selection {

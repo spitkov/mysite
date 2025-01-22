@@ -1,8 +1,23 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
-    '@nuxtjs/tailwindcss'
+    '@nuxtjs/tailwindcss',
+    '@nuxt/content'
   ],
+
+  content: {
+    documentDriven: true,
+    markdown: {
+      mdc: true,
+      toc: {
+        depth: 3,
+        searchDepth: 3
+      }
+    },
+    highlight: {
+      theme: 'github-dark'
+    }
+  },
 
   app: {
     head: {
@@ -44,5 +59,7 @@ export default defineNuxtConfig({
   nitro: {
     compressPublicAssets: true,
     minify: true
-  }
+  },
+
+  compatibilityDate: '2025-01-22'
 })

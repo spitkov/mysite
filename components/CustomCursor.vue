@@ -1,20 +1,20 @@
 <template>
   <div>
     <div 
+      ref="cursorDot"
       class="cursor-dot"
       :class="{ 'cursor-hover': isHovering }"
       :style="{ 
-        left: `${position.x}px`,
-        top: `${position.y}px`
+        transform: `translate3d(${position.x}px, ${position.y}px, 0) translate(-50%, -50%)`
       }"
     ></div>
     
     <div 
+      ref="crosshair"
       class="crosshair-container"
       :class="{ 'cursor-hover': isHovering }"
       :style="{ 
-        left: `${position.x}px`,
-        top: `${position.y}px`
+        transform: `translate3d(${position.x}px, ${position.y}px, 0) translate(-50%, -50%) ${isHovering ? 'rotate(45deg)' : ''}`
       }"
     >
       <div class="crosshair-line top"></div>
@@ -26,34 +26,62 @@
 </template>
 
 <script setup>
-const position = ref({ x: -100, y: -100 })
+const position = ref({ x: 0, y: 0 })
 const isHovering = ref(false)
+let rafId = null
 
-onMounted(() => {
-  position.value = {
-    x: window.innerWidth / 2,
-    y: window.innerHeight / 2
+function updateCursor(e) {
+  if (rafId) {
+    cancelAnimationFrame(rafId)
   }
   
-  window.addEventListener('mousemove', onMouseMove)
-  document.addEventListener('mouseover', checkHover)
-  document.addEventListener('mouseout', checkHover)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('mousemove', onMouseMove)
-  document.removeEventListener('mouseover', checkHover)
-  document.removeEventListener('mouseout', checkHover)
-})
-
-function onMouseMove(e) {
-  position.value = { x: e.clientX, y: e.clientY }
+  rafId = requestAnimationFrame(() => {
+    position.value = { 
+      x: e.clientX,
+      y: e.clientY
+    }
+  })
 }
 
 function checkHover(e) {
   const target = e.target
-  isHovering.value = target.closest('a, button, .nav-link') !== null
+  isHovering.value = target.closest('a, button, .nav-link, [role="button"]') !== null
 }
+
+function setupEventListeners() {
+  window.addEventListener('mousemove', updateCursor, { passive: true })
+  document.addEventListener('mouseover', checkHover, { passive: true })
+  document.addEventListener('mouseout', checkHover, { passive: true })
+}
+
+function removeEventListeners() {
+  window.removeEventListener('mousemove', updateCursor)
+  document.removeEventListener('mouseover', checkHover)
+  document.removeEventListener('mouseout', checkHover)
+}
+
+// Watch for route changes
+const route = useRoute()
+watch(() => route.path, () => {
+  // Remove and reattach event listeners
+  removeEventListeners()
+  nextTick(() => {
+    setupEventListeners()
+  })
+})
+
+onMounted(() => {
+  setupEventListeners()
+  document.body.style.cursor = 'none'
+})
+
+onUnmounted(() => {
+  if (rafId) {
+    cancelAnimationFrame(rafId)
+  }
+  removeEventListeners()
+  document.body.style.cursor = 'auto'
+})
 </script>
 
 <style scoped>
@@ -65,7 +93,9 @@ function checkHover(e) {
   border-radius: 50%;
   pointer-events: none;
   z-index: 9999;
-  transform: translate(-50%, -50%);
+  left: 0;
+  top: 0;
+  will-change: transform;
   transition: width 0.2s, height 0.2s, background-color 0.2s;
 }
 
@@ -81,14 +111,15 @@ function checkHover(e) {
   height: 24px;
   pointer-events: none;
   z-index: 9998;
-  transform: translate(-50%, -50%);
-  transition: width 0.2s, height 0.2s, transform 0.2s;
+  left: 0;
+  top: 0;
+  will-change: transform;
+  transition: width 0.2s, height 0.2s;
 }
 
 .crosshair-container.cursor-hover {
   width: 32px;
   height: 32px;
-  transform: translate(-50%, -50%) rotate(45deg);
 }
 
 .crosshair-line {
