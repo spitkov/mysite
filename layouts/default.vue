@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-black/95 text-white font-mono flex flex-col cursor-custom">
+  <div class="min-h-screen bg-black/95 text-white font-mono flex flex-col">
     <nav class="fixed top-0 w-full bg-black/90 backdrop-blur-sm border border-green-500/20 z-50">
       <div class="max-w-4xl mx-auto px-2 md:px-4">
         <div class="flex items-center justify-center h-10 md:h-12">

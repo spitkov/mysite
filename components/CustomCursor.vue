@@ -72,7 +72,7 @@ watch(() => route.path, () => {
 
 onMounted(() => {
   setupEventListeners()
-  document.body.style.cursor = 'none'
+  document.body.classList.add('cursor-custom')
 })
 
 onUnmounted(() => {
@@ -80,7 +80,7 @@ onUnmounted(() => {
     cancelAnimationFrame(rafId)
   }
   removeEventListeners()
-  document.body.style.cursor = 'auto'
+  document.body.classList.remove('cursor-custom')
 })
 </script>
 
