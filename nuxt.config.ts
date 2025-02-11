@@ -45,7 +45,8 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      discordId: '1092100801478004816'
+      discordId: process.env.DISCORD_ID,
+      githubToken: process.env.GITHUB_TOKEN
     }
   },
 

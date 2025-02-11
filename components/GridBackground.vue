@@ -17,23 +17,35 @@ const maxDotSize = computed(() => isMobile.value ? 1.5 : 3)
 let animationFrameId = null
 let isDrawing = false
 let lastDrawTime = 0
-const THROTTLE_MS = 1000 / 30 // Cap at 30fps on mobile
+const THROTTLE_MS = 1000 / 30 // Cap at 30fps
 let resizeObserver = null
+
+// Cache for performance
+let currentWidth = 0
+let currentHeight = 0
+let numCols = 0
+let numRows = 0
+let offsetX = 0
+let offsetY = 0
 
 onMounted(() => {
   if (!canvas.value) return
   
   checkMobile()
-  ctx = canvas.value.getContext('2d', { alpha: true })
+  ctx = canvas.value.getContext('2d', { 
+    alpha: true,
+    desynchronized: true // Reduce latency
+  })
   ctx.imageSmoothingEnabled = false
   
   initCanvas()
+  updateGridDimensions()
   draw()
   
   // Create resize observer
-  resizeObserver = new ResizeObserver(() => {
+  resizeObserver = new ResizeObserver(throttle(() => {
     handleResize()
-  })
+  }, 100))
   resizeObserver.observe(canvas.value)
   
   window.addEventListener('mousemove', handleMouseMove, { passive: true })
@@ -55,8 +67,29 @@ onUnmounted(() => {
   }
 })
 
+// Simple throttle function
+function throttle(func, limit) {
+  let inThrottle
+  return function(...args) {
+    if (!inThrottle) {
+      func.apply(this, args)
+      inThrottle = true
+      setTimeout(() => inThrottle = false, limit)
+    }
+  }
+}
+
 function checkMobile() {
   isMobile.value = window.innerWidth < 768
+}
+
+function updateGridDimensions() {
+  currentWidth = window.innerWidth
+  currentHeight = window.innerHeight
+  numCols = Math.floor(currentWidth / gridSize.value)
+  numRows = Math.floor(currentHeight / gridSize.value)
+  offsetX = (currentWidth - (numCols * gridSize.value)) / 2
+  offsetY = (currentHeight - (numRows * gridSize.value)) / 2
 }
 
 function initCanvas() {
@@ -65,19 +98,16 @@ function initCanvas() {
   const rect = canvas.value.getBoundingClientRect()
   const dpr = window.devicePixelRatio || 1
   
-  // Set canvas size in pixels
   canvas.value.width = rect.width * dpr
   canvas.value.height = rect.height * dpr
   
-  // Set display size
-  canvas.value.style.width = `${window.innerWidth}px`
-  canvas.value.style.height = `${window.innerHeight}px`
+  canvas.value.style.width = `${rect.width}px`
+  canvas.value.style.height = `${rect.height}px`
   
-  // Scale context
   ctx.scale(dpr, dpr)
 }
 
-function handleResize() {
+const handleResize = throttle(() => {
   if (!canvas.value) return
   
   if (animationFrameId) {
@@ -86,22 +116,23 @@ function handleResize() {
   
   checkMobile()
   initCanvas()
+  updateGridDimensions()
   requestDraw()
-}
+}, 100)
 
-function handleTouchMove(e) {
+const handleTouchMove = throttle((e) => {
   if (e.touches && e.touches[0]) {
     mouseX = e.touches[0].clientX
     mouseY = e.touches[0].clientY
     requestDraw()
   }
-}
+}, 50)
 
-function handleMouseMove(e) {
+const handleMouseMove = throttle((e) => {
   mouseX = e.clientX
   mouseY = e.clientY
   requestDraw()
-}
+}, 16) // ~60fps
 
 function requestDraw() {
   if (!isDrawing) {
@@ -122,40 +153,36 @@ function requestDraw() {
 function draw() {
   if (!canvas.value || !ctx) return
   
-  const width = window.innerWidth
-  const height = window.innerHeight
+  ctx.clearRect(0, 0, currentWidth, currentHeight)
   
-  ctx.clearRect(0, 0, width, height)
-  
-  const numCols = Math.floor(width / gridSize.value)
-  const numRows = Math.floor(height / gridSize.value)
-  
-  const offsetX = (width - (numCols * gridSize.value)) / 2
-  const offsetY = (height - (numRows * gridSize.value)) / 2
-  
-  // Draw dots with optimized calculations
   const currentBaseDotSize = baseDotSize.value
   const currentMaxDotSize = maxDotSize.value
   const currentMaxDistance = maxDistance.value
   const sizeDiff = currentMaxDotSize - currentBaseDotSize
   
   for (let col = 0; col <= numCols; col++) {
+    const x = Math.round(col * gridSize.value + offsetX)
+    
     for (let row = 0; row <= numRows; row++) {
-      const x = Math.round(col * gridSize.value + offsetX)
       const y = Math.round(row * gridSize.value + offsetY)
       
       const dx = x - mouseX
       const dy = y - mouseY
-      const distance = Math.hypot(dx, dy)
+      const distance = Math.sqrt(dx * dx + dy * dy)
       
-      let size = currentBaseDotSize
-      let opacity = 0.15
-      
-      if (distance < currentMaxDistance) {
-        const scale = 1 - (distance / currentMaxDistance)
-        size = currentBaseDotSize + sizeDiff * scale
-        opacity = 0.15 + scale * 0.25
+      if (distance > currentMaxDistance) {
+        // Draw static dot
+        ctx.beginPath()
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.15)'
+        ctx.arc(x, y, currentBaseDotSize, 0, Math.PI * 2)
+        ctx.fill()
+        continue
       }
+      
+      // Draw interactive dot
+      const scale = 1 - (distance / currentMaxDistance)
+      const size = currentBaseDotSize + sizeDiff * scale
+      const opacity = 0.15 + scale * 0.25
       
       ctx.beginPath()
       ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`

@@ -1,6 +1,6 @@
 <template>
-  <div class="min-h-screen bg-black/95 text-white font-mono flex flex-col">
-    <nav class="fixed top-0 w-full bg-black/90 backdrop-blur-sm border border-green-500/20 z-50">
+  <div class="h-screen overflow-hidden bg-black/95 text-white font-mono flex flex-col">
+    <nav class="fixed top-0 w-full bg-black/90 backdrop-blur-sm border border-green-500/20 z-[100]">
       <div class="max-w-4xl mx-auto px-2 md:px-4">
         <div class="flex items-center justify-center h-10 md:h-12">
           <div class="flex items-center space-x-2 md:space-x-6 overflow-x-auto no-scrollbar text-sm">
@@ -9,29 +9,36 @@
             <NuxtLink to="/tools" class="nav-link whitespace-nowrap">~/tools</NuxtLink>
             <NuxtLink to="/fun" class="nav-link whitespace-nowrap">~/fun</NuxtLink>
           </div>
-
         </div>
       </div>
     </nav>
 
-    <main class="flex-1 flex flex-col items-center justify-center px-2 md:px-4 mt-10 md:mt-12">
+    <main class="flex-1 flex flex-col items-center justify-center px-2 md:px-4 mt-10 md:mt-12 relative z-[2] overflow-hidden">
       <div class="w-full max-w-4xl">
         <NuxtPage />
       </div>
     </main>
 
-    <footer class="w-full py-1 md:py-2 text-center text-white/50 text-xs md:text-sm border border-green-500/20">
-      <p>© 2024 spitkov :3</p>
+    <footer class="w-full py-1 md:py-2 text-center text-white/50 text-xs md:text-sm border border-green-500/20 relative z-[2]">
+      <div class="max-w-4xl mx-auto px-2 md:px-4">
+        <p>© 2024 spitkov :3</p>
+      </div>
     </footer>
 
-    <GridBackground />
-    <CustomCursor class="hidden md:block" />
+    <GridBackground class="z-[1]" />
+    <KeyboardNav />
   </div>
 </template>
+
+<script setup>
+import KeyboardNav from '~/components/KeyboardNav.vue'
+import GridBackground from '~/components/GridBackground.vue'
+</script>
 
 <style>
 body {
   background: black;
+  overflow: hidden;
 }
 
 :root {
@@ -41,21 +48,6 @@ body {
 ::selection {
   background: rgba(74, 222, 128, 0.2);
   color: #ffffff;
-}
-
-.cursor-custom {
-  cursor: none !important;
-}
-
-.cursor-custom * {
-  cursor: none !important;
-}
-
-@media (max-width: 768px) {
-  .cursor-custom,
-  .cursor-custom * {
-    cursor: auto !important;
-  }
 }
 
 .no-scrollbar {
@@ -116,45 +108,45 @@ body {
 
 /* Add global card styles */
 [class*="border"] {
-  border-color: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
   border-width: 1px !important;
-  background: rgba(0, 0, 0, 0.5) !important;
-  backdrop-filter: blur(16px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  background: rgba(0, 0, 0, 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
   position: relative !important;
-  z-index: 1 !important;
+  z-index: 2 !important;
 }
 
 [class*="bg-black"] {
-  background-color: rgba(0, 0, 0, 0.5) !important;
-  backdrop-filter: blur(16px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  background-color: rgba(0, 0, 0, 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
   position: relative !important;
-  z-index: 1 !important;
+  z-index: 2 !important;
 }
 
 /* Ensure nav is always on top */
 nav {
   position: fixed;
   top: 0;
-  z-index: 50 !important;
-  background: rgba(0, 0, 0, 0.6) !important;
-  backdrop-filter: blur(16px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  z-index: 100 !important;
+  background: rgba(0, 0, 0, 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
 }
 
 /* Ensure footer is above background but below content */
 footer {
   position: relative;
-  z-index: 1 !important;
-  background: rgba(0, 0, 0, 0.6) !important;
-  backdrop-filter: blur(16px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  z-index: 2 !important;
+  background: rgba(0, 0, 0, 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
 }
 
 /* Background should always be at the bottom */
 .fixed {
-  z-index: 0 !important;
+  z-index: 1 !important;
 }
 
 .page-enter-active,
