@@ -46,7 +46,7 @@
 const data = ref(null)
 let previousData = null
 const config = useRuntimeConfig()
-const DISCORD_ID = config.public.discordId
+const DISCORD_ID = 1092100801478004816
 let updateInterval
 
 const statusColor = computed(() => {
