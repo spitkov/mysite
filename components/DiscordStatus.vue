@@ -103,7 +103,7 @@ const getActivityIcon = (activity) => {
 
 async function fetchDiscordStatus() {
   try {
-    const response = await fetch('https://api.lanyard.rest/v1/users/' + DISCORD_ID)
+    const response = await fetch('https://api.lanyard.rest/v1/users/1092100801478004816')
     const result = await response.json()
     
     if (result.success && JSON.stringify(result.data) !== JSON.stringify(previousData)) {
