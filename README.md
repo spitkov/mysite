@@ -49,4 +49,4 @@ NUXT_PUBLIC_DISCORD_ID=your_discord_id
 
 ## License
 
-Copyright © 2024 spitkov. All rights reserved.
+Copyright © 2024-2025 spitkov. All rights reserved.
