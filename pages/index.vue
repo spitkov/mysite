@@ -3,7 +3,7 @@
     <div class="border border-white/5 rounded-lg p-4 md:p-6 bg-black/50 backdrop-blur-xl backdrop-saturate-150 relative">
       <div class="flex flex-col items-center text-center space-y-4 md:space-y-6">
         <div class="relative w-16 h-16 md:w-24 md:h-24">
-          <img src="https://x.spitkov.hu/u/aMSOMT.png" alt="Profile Picture" class="w-full h-full rounded-xl object-cover" />
+          <img src="https://x.spitkov.hu/raw/aMSOMT.png" alt="Profile Picture" class="w-full h-full rounded-xl object-cover" />
         </div>
         
         <div class="space-y-4">
