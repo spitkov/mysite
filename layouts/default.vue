@@ -21,7 +21,7 @@
 
     <footer class="w-full py-1 md:py-2 text-center text-white/50 text-xs md:text-sm border border-green-500/20 relative z-[2]">
       <div class="max-w-4xl mx-auto px-2 md:px-4">
-        <p>© 2024 spitkov :3</p>
+        <p>© {{ new Date().getFullYear() }} spitkov :3</p>
       </div>
     </footer>
 
@@ -114,7 +114,6 @@ body {
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
   position: relative !important;
-  z-index: 2 !important;
 }
 
 [class*="bg-black"] {
@@ -122,7 +121,6 @@ body {
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
   position: relative !important;
-  z-index: 2 !important;
 }
 
 /* Ensure nav is always on top */
